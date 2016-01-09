@@ -10,6 +10,7 @@ import mime from 'rest/interceptor/mime'
 import errorCode from 'rest/interceptor/errorCode'
 import pathPrefix from 'rest/interceptor/pathPrefix'
 import defaultRequest from 'rest/interceptor/defaultRequest'
+import Kefir from 'kefir'
 
 export const apiStockFighter =
   rest

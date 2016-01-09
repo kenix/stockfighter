@@ -7,6 +7,8 @@
 import React from 'react'
 import Topbar from 'amazeui-react/lib/Topbar'
 
+import Brand from './Brand'
+
 export default class Header extends React.Component {
 
   constructor(props) {
@@ -15,7 +17,7 @@ export default class Header extends React.Component {
 
   render() {
     return (
-      <Topbar brand='Stock Fighter' inverse={true}/>
+      <Topbar brand={<Brand />} inverse={true}/>
     );
   }
 }
