@@ -57,6 +57,10 @@ export default class StatusIndicator extends React.Component {
   }
 
   healthPathCallback = (v) => {
+    if (this.heartbeat) {
+      this.heartbeat.offAny(this.statusCallback);
+      this.heartbeat = null;
+    }
     this.heartbeat = Kefir.concat([
       Kefir.stream(emitter=> {
         this.getApiStatus(v)
