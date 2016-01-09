@@ -7,6 +7,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './component/App';
 
+require('amazeui/dist/css/amazeui.flat.css');
+
 main();
 
 function main() {

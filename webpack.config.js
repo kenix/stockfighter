@@ -10,7 +10,8 @@ const merge = require('webpack-merge');
 const TARGET = process.env.npm_lifecycle_event;
 const PATHS = {
   app: path.join(__dirname, 'app'),
-  build: path.join(__dirname, 'build')
+  build: path.join(__dirname, 'build'),
+  amazeUI: path.join(__dirname, 'node_modules/amazeui/dist/css')
 };
 
 process.env.BABEL_ENV = TARGET;
@@ -34,19 +35,23 @@ const common = {
       {
         test: /\.css$/, // RegEx to match resources
         loaders: ['style', 'css'], // loaders to apply from right to left
-        include: PATHS.app // either a path or an array of paths
+        include: [PATHS.app, PATHS.amazeUI] // either a path or an array of paths
       },
       {
         test: /\.jsx?$/,
         loaders: ['babel'],
         include: PATHS.app
-      }
+      },
+      {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file"},
+      {test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader: "url?prefix=font/&limit=5000"},
+      {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream"},
+      {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml"}
     ]
   },
   plugins: [
     // new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
-      title: 'webpack react template',
+      title: 'Stock-Fighter',
       favicon: './favicon.ico'
     })
   ]
