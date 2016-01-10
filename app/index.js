@@ -2,12 +2,12 @@
  * @author zzhao
  */
 'use strict';
+import 'amazeui/dist/css/amazeui.flat.css';
 import './main.css';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './component/App';
-
-require('amazeui/dist/css/amazeui.flat.css');
 
 main();
 

@@ -1,3 +1,7 @@
 body {
-    background-color: honeydew;
+    background-color: mintcream;
+}
+
+.am-selected {
+    width: auto;
 }

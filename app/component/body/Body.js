@@ -7,7 +7,7 @@
 import React from 'react'
 import Container from 'amazeui-react/lib/Container'
 
-import StockPanel from './StockPanel'
+import VenuePanel from './venue/VenuePanel'
 
 export default class Body extends React.Component {
 
@@ -18,7 +18,7 @@ export default class Body extends React.Component {
   render() {
     return (
       <div className="am-container">
-        <Container><StockPanel /></Container>
+        <Container><VenuePanel /></Container>
       </div>
     );
   }

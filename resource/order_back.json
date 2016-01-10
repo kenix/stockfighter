@@ -1,0 +1,16 @@
+{
+  "account": "MSB36450550",
+  "direction": "buy",
+  "fills": [],
+  "id": 2000,
+  "ok": true,
+  "open": true,
+  "orderType": "limit",
+  "originalQty": 10,
+  "price": 7555,
+  "qty": 10,
+  "symbol": "TLEO",
+  "totalFilled": 0,
+  "ts": "2016-01-10T22:01:50.556213797Z",
+  "venue": "ORNEX"
+}

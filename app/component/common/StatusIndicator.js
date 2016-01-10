@@ -34,6 +34,11 @@ export default class StatusIndicator extends React.Component {
     className: 'api-down'
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    const {icon,className}=this.state;
+    return icon !== nextState.icon || className !== nextState.className;
+  }
+
   getApiStatus = (path) => {
     const {pathPrefix, pathSuffix}=this.props;
     return apiStockFighter({
@@ -42,7 +47,7 @@ export default class StatusIndicator extends React.Component {
   }
 
   statusCallback = (evt) => {
-    console.log('<StatusIndicator.statusCallback>', evt);
+    // console.log('<StatusIndicator.statusCallback>', evt);
     if (evt.type === 'value') {
       this.setState({
         icon: evt.value.ok ? 'heartbeat' : 'warning',
@@ -73,7 +78,7 @@ export default class StatusIndicator extends React.Component {
             emitter.end();
           })
       }),
-      Kefir.withInterval(10000, emitter=> {
+      Kefir.withInterval(30000, emitter=> {
         this.getApiStatus(v)
           .then(resp=>emitter.emit(resp.entity))
           .catch(e=>emitter.error(e))
@@ -84,13 +89,13 @@ export default class StatusIndicator extends React.Component {
 
   componentWillMount() {
     console.log('<StatusIndicator.componentWillMount>', this.props.healthPath);
-    this.healthSub = this.props.healthPath.onValue(this.healthPathCallback);
+    this.props.healthPath.onValue(this.healthPathCallback);
   }
 
   componentWillUnmount() {
     console.log('<StatusIndicator.componentWillUnmount>', this.props.healthPath);
     this.heartbeat.offAny(this.statusCallback);
-    this.healthSub.offValue(this.healthPathCallback);
+    this.props.healthPath.offValue(this.healthPathCallback);
   }
 
   render() {

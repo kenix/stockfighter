@@ -1,0 +1,97 @@
+/**
+ * @author zzhao
+ */
+'use strict';
+import React from 'react'
+import Icon from 'amazeui-react/lib/Icon'
+import Grid from 'amazeui-react/lib/Grid'
+import Col from 'amazeui-react/lib/Col'
+
+import OrderList from './OrderList'
+import {selectedVenueStream, selectedStockStream, apiStockFighter} from '../../../util/api'
+
+export default class OrderBook extends React.Component {
+
+  constructor(props) {
+    super(props);
+  }
+
+  state = {
+    loading: false,
+    bids: [],
+    asks: [],
+    ts: ''
+  }
+
+  loadStatus = (loading) => {
+    this.setState({loading});
+  }
+
+  loadFailed = (resp) => {
+    console.log('<OrderBook.loadFailed>', resp);
+    this.loadStatus(false);
+  }
+
+  loadSuccess = (orderBook) => {
+    console.log('<OrderBook.loadSuccess>', orderBook);
+    const {bids, asks}=orderBook;
+    this.setState({
+      loading: false,
+      bids: bids ? bids : [],
+      asks: asks ? asks : [],
+      ts: orderBook.ts
+    });
+  }
+
+  componentWillMount() {
+    console.log('<OrderBook.componentWillMount>');
+    selectedStockStream.onValue(this.onStock);
+  }
+
+  componentWillUnmount() {
+    console.log('<OrderBook.componentWillUnmount>');
+    selectedStockStream.offValue(this.onStock);
+  }
+
+  onStock = (stock) => {
+    console.log('<Orderbook.onStock>', stock);
+    if (!stock || !stock.ticker) {
+      return;
+    }
+    this.loadStatus(true);
+    apiStockFighter({path: `venues/${stock.venue}/stocks/${stock.ticker}`})
+      .then(resp=> {
+        const entity = resp.entity;
+        if (entity.ok) {
+          this.loadSuccess(entity);
+        } else {
+          this.loadFailed(resp);
+        }
+      }).catch(e=> {
+      this.loadFailed(e);
+    })
+  }
+
+  render() {
+    let {bids, asks, loading, ts}=this.state;
+    if (loading) {
+      return <Icon icon="spinner" spin pulse/>
+    }
+
+    const maxDepth = 5;
+
+    if (bids.length > maxDepth) {
+      bids = bids.slice(0, maxDepth);
+    }
+    if (asks.length > maxDepth) {
+      asks = asks.slice(0, maxDepth);
+    }
+
+    return (
+      <Grid>
+        <Col sm={6}><OrderList header="Ask" orders={asks} ts={ts}/></Col>
+        <Col sm={6}><OrderList header="Bid" orders={bids} ts={ts}/></Col>
+      </Grid>
+    );
+  }
+}
