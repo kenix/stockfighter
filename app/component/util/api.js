@@ -30,10 +30,17 @@ export const apiStockFighter =
 
 export const eventEmitter = new EventEmitter();
 export const venueStream = Kefir.fromEvents(eventEmitter, 'venue');
+
 export const tradingAccountProp = Kefir
   .fromEvents(eventEmitter, 'tradingAccount')
   .skipDuplicates()
   .toProperty(()=>'');
+let tradingAccount = '';
+tradingAccountProp.onValue((ta)=>tradingAccount = ta);
+export function currentAccount() {
+  return tradingAccount;
+}
+
 export const venueRemovedStream = Kefir.fromEvents(eventEmitter, 'removeVenue');
 export const selectedVenueStream = Kefir.fromEvents(eventEmitter, 'selectVenue').skipDuplicates();
 export const selectedStockStream = Kefir.merge([
@@ -45,3 +52,4 @@ export const selectedStockStream = Kefir.merge([
   })
 ]);
 export const stockTickerStream = selectedStockStream.map(stock=>stock.ticker).skipDuplicates();
+export const quoteStream = Kefir.fromEvents(eventEmitter, 'quote');

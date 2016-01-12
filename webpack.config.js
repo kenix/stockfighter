@@ -66,6 +66,14 @@ if (TARGET === 'start' || !TARGET) {
       // Display only errors to reduce the amount of output.
       stats: 'errors-only',
 
+      /**
+       *  '/ob/api/ws/*': {
+          target: 'wss://api.stockfighter.io',
+          secure: false,
+          ws: true
+        },
+       */
+
       // Parse host and port from env so this is easy to customize.
       host: process.env.HOST,
       port: process.env.PORT,
