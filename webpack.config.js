@@ -62,19 +62,25 @@ if (TARGET === 'start' || !TARGET) {
     devtool: 'eval-source-map',
     devServer: {
       historyApiFallback: true,
-      hot: true,
-      inline: true,
-      progress: true,
 
       // Display only errors to reduce the amount of output.
       stats: 'errors-only',
 
       // Parse host and port from env so this is easy to customize.
       host: process.env.HOST,
-      port: process.env.PORT
-    },
-    plugins: [
-      new webpack.HotModuleReplacementPlugin()
-    ]
+      port: process.env.PORT,
+      proxy: {
+        '/ob/api/*': {
+          target: 'https://api.stockfighter.io',
+          secure: false,
+          bypass: function (req, res, proxyOptions) {
+            if (req.headers.accept.indexOf('html') !== -1) {
+              console.log('Skipping proxy for browser request.');
+              return '/index.html';
+            }
+          },
+        },
+      }
+    }
   });
 }

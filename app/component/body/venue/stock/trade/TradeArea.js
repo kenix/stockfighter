@@ -128,13 +128,17 @@ export default class TradeArea extends React.Component {
     this.price.focus();
   }
 
+  static stylePriceQty = {
+    width: '120px'
+  }
+
   render() {
     console.log('<TradeArea.render>', this.state);
     return (
       <form className="am-form am-form-inline">
-        <input placeholder="Price" id="priceInput" className="am-form-field"/>
+        <input placeholder="Price" id="priceInput" className="am-form-field" style={TradeArea.stylePriceQty}/>
         <span> </span>
-        <input placeholder="Quantity" id="quantityInput" className="am-form-field"/>
+        <input placeholder="Quantity" id="quantityInput" className="am-form-field" style={TradeArea.stylePriceQty}/>
         <span> </span>
         <Selected data={TradeArea.orderTypes} btnStyle="warning" value="limit"
                   name="orderType" btnWidth={100}/>

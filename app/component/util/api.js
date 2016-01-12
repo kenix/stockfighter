@@ -13,12 +13,13 @@ import defaultRequest from 'rest/interceptor/defaultRequest'
 import Kefir from 'kefir'
 import EventEmitter from 'eventemitter3'
 
+//https://api.stockfighter.io
 export const apiStockFighter =
   rest
     .wrap(timeout, {timeout: 5000})
     .wrap(mime)
     .wrap(errorCode, {code: 400})
-    .wrap(pathPrefix, {prefix: 'https://api.stockfighter.io/ob/api/'})
+    .wrap(pathPrefix, {prefix: 'ob/api/'})
     .wrap(defaultRequest, {
       method: 'GET',
       headers: {
