@@ -43,7 +43,13 @@ export default class QuoteControl extends React.Component {
   }
 
   onSocketMessage = (evt) => {
-    console.log('<QuoteControl.onSocketMessage>', evt.data);
+    // console.log('<QuoteControl.onSocketMessage>', evt.data);
+    const msg = JSON.parse(evt.data);
+    if (!msg.ok) {
+      console.log('<QuoteControl.onSocketMessage> error', evt.data);
+    } else {
+      eventEmitter.emit('quote', msg.quote);
+    }
   }
 
   onSockError = (err) => {

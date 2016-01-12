@@ -8,6 +8,7 @@ import Icon from 'amazeui-react/lib/Icon'
 import Badge from 'amazeui-react/lib/Badge'
 
 import QuoteControl from './QuoteControl'
+import StockQuote from './StockQuote'
 import {eventEmitter, selectedVenueStream, apiStockFighter} from '../../../util/api'
 
 export default class StockList extends React.Component {
@@ -73,7 +74,7 @@ export default class StockList extends React.Component {
   render() {
     const {stocks, loading, venue}=this.state;
     if (loading) {
-      return <Icon icon="spinner" spin pulse/>
+      return <Icon icon="spinner" spin className='am-icon-pulse'/>
     }
 
     return (
@@ -81,19 +82,17 @@ export default class StockList extends React.Component {
         <Table compact striped responsive hover>
           <thead>
           <tr>
-            <th>#</th>
-            <th>Ticker</th>
-            <th>Name</th>
+            <th style={{width: '20%'}}>Ticker</th>
+            <th style={{width: '20%'}}>Bid</th>
+            <th style={{width: '20%'}}>Trade</th>
+            <th style={{width: '20%'}}>Ask</th>
+            <th style={{width: '20%'}}>TS</th>
           </tr>
           </thead>
           <tbody onClick={this.selectStock}>
-          {stocks.map((s, idx)=> {
+          {stocks.map((s)=> {
             return (
-              <tr key={s.symbol} data-ticker={s.symbol}>
-                <td>{idx + 1}</td>
-                <td>{s.symbol}</td>
-                <td>{s.name}</td>
-              </tr>
+              <StockQuote key={s.symbol} stock={s}/>
             );
           })}
           </tbody>

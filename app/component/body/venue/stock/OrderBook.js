@@ -8,7 +8,8 @@ import Grid from 'amazeui-react/lib/Grid'
 import Col from 'amazeui-react/lib/Col'
 
 import OrderList from './OrderList'
-import {selectedVenueStream, selectedStockStream, apiStockFighter} from '../../../util/api'
+import BidAskSpreads from './BidAskSpreads'
+import {selectedVenueStream, stockSelectionStream, apiStockFighter} from '../../../util/api'
 
 export default class OrderBook extends React.Component {
 
@@ -45,12 +46,12 @@ export default class OrderBook extends React.Component {
 
   componentWillMount() {
     console.log('<OrderBook.componentWillMount>');
-    selectedStockStream.onValue(this.onStock);
+    stockSelectionStream.onValue(this.onStock);
   }
 
   componentWillUnmount() {
     console.log('<OrderBook.componentWillUnmount>');
-    selectedStockStream.offValue(this.onStock);
+    stockSelectionStream.offValue(this.onStock);
   }
 
   onStock = (stock) => {
@@ -67,15 +68,15 @@ export default class OrderBook extends React.Component {
         } else {
           this.loadFailed(resp);
         }
-      }).catch(e=> {
-      this.loadFailed(e);
-    })
+      }, e=> {
+        this.loadFailed(e);
+      })
   }
 
   render() {
     let {bids, asks, loading, ts}=this.state;
     if (loading) {
-      return <Icon icon="spinner" spin pulse/>
+      return <Icon icon="spinner" spin className='am-icon-pulse'/>
     }
 
     const maxDepth = 5;
@@ -86,12 +87,26 @@ export default class OrderBook extends React.Component {
     if (asks.length > maxDepth) {
       asks = asks.slice(0, maxDepth);
     }
+    const spreads = this.calcSpreads(bids, asks);
 
     return (
       <Grid>
-        <Col sm={6}><OrderList header="Ask" orders={asks} ts={ts}/></Col>
-        <Col sm={6}><OrderList header="Bid" orders={bids} ts={ts}/></Col>
+        <Col sm={5}><OrderList header="Bid" orders={bids} ts={ts}/></Col>
+        <Col sm={2}><BidAskSpreads header="Spread" spreads={spreads} ts={ts}/></Col>
+        <Col sm={5}><OrderList header="Ask" orders={asks} ts={ts}/></Col>
       </Grid>
     );
+  }
+
+  calcSpreads = (bids, asks) => {
+    if (!bids || !bids.length || !asks || !asks.length) {
+      return [];
+    }
+    const diffs = Array.from(bids);
+    diffs.fill(0);
+    for (let i = 0; i < diffs.length; i++) {
+      diffs[i] = (asks[0].price - bids[i].price) / asks[0].price;
+    }
+    return diffs;
   }
 }

@@ -43,8 +43,9 @@ export function currentAccount() {
 
 export const venueRemovedStream = Kefir.fromEvents(eventEmitter, 'removeVenue');
 export const selectedVenueStream = Kefir.fromEvents(eventEmitter, 'selectVenue').skipDuplicates();
+export const stockSelectionStream = Kefir.fromEvents(eventEmitter, 'selectStock');
 export const selectedStockStream = Kefir.merge([
-  Kefir.fromEvents(eventEmitter, 'selectStock').skipDuplicates((s1, s2)=> {
+  stockSelectionStream.skipDuplicates((s1, s2)=> {
     return s1.venue === s2.venue && s1.ticker == s2.ticker;
   }),
   selectedVenueStream.map(v=> {
