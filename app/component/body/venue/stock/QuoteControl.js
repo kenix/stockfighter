@@ -3,7 +3,6 @@
  */
 'use strict';
 import React, {PropTypes} from 'react'
-import SockJS from 'socket.io'
 import ButtonToolbar from 'amazeui-react/lib/ButtonToolbar'
 import ButtonGroup from 'amazeui-react/lib/ButtonGroup'
 import Button from 'amazeui-react/lib/Button'
@@ -19,7 +18,7 @@ export default class QuoteControl extends React.Component {
 
   constructor(props) {
     super(props);
-    this.sockJS = null;
+    this.socket = null;
   }
 
   state = {
@@ -34,31 +33,36 @@ export default class QuoteControl extends React.Component {
     this.stopQuotes(null);
   }
 
-  onSockJSOpen = () => {
-    console.log('<StockList.onSockJSOpen>');
+  onSocketOpen = () => {
+    console.log('<QuoteControl.onSocketOpen>');
+    this.setState({playing: true});
   }
 
-  onSockJSClose = () => {
-    console.log('<StockList.onSockJSClose>');
+  onSocketClose = () => {
+    console.log('<QuoteControl.onSocketClose>');
   }
 
-  onSockMessage = (evt) => {
-    console.log('<StockList.onSockMessage>', evt);
+  onSocketMessage = (evt) => {
+    console.log('<QuoteControl.onSocketMessage>', evt.data);
+  }
+
+  onSockError = (err) => {
+    console.log('<QuoteControl.onSockError>');
   }
 
   startQuotes = (evt) => {
     const {venue} =this.props;
 
-    this.sockJS = new SockJS(`wss://api.stockfighter.io/ob/api/ws/${currentAccount()}/venues/${venue}/tickertape`);
-    this.sockJS.onopen = this.onSockJSOpen;
-    this.sockJS.onmessage = this.onSockMessage;
-    this.sockJS.onclose = this.onSockJSClose;
+    this.socket = new WebSocket(`wss://api.stockfighter.io/ob/api/ws/${currentAccount()}/venues/${venue}/tickertape`);
+    this.socket.onopen = this.onSocketOpen;
+    this.socket.onmessage = this.onSocketMessage;
   }
 
   stopQuotes = (evt) => {
-    if (!!this.sockJS) {
-      console.log('<StockList.startQuotes> close existing sockjs client');
-      this.sockJS.close();
+    if (!!this.socket) {
+      console.log('<QuoteControl.startQuotes> close existing websocket client');
+      this.socket.close();
+      this.socket = null;
     }
     this.setState({playing: false});
   }
@@ -83,19 +87,4 @@ export default class QuoteControl extends React.Component {
       </ButtonToolbar>
     );
   }
-
-  /**
-   * io.on('connection', function (socket) {
-  io.emit('this', { will: 'be received by everyone'});
-
-  socket.on('private message', function (from, msg) {
-    console.log('I received a private message by ', from, ' saying ', msg);
-  });
-
-  socket.on('disconnect', function () {
-    io.emit('user disconnected');
-  });
-});
-   #
-   */
 }
